@@ -114,11 +114,13 @@ public class SimpleDelay extends Source implements Receiver, Steppable
             token.setAmount(maxIncoming);
             cr.decrease(maxIncoming);
             delayQueue.add(new Node(token, nextTime));
+			totalResource += maxIncoming;            
             }
         else
             {
             if (delayQueue.size() >= capacity) return false; // we're at capacity
             delayQueue.add(new Node(amount, nextTime));
+			totalResource += 1;            
             }
         if (getAutoSchedules()) state.schedule.scheduleOnce(nextTime, getRescheduleOrdering(), this);
         return true;
@@ -151,12 +153,13 @@ public class SimpleDelay extends Source implements Receiver, Steppable
                     {
                     CountableResource res = ((CountableResource)(node.resource));
                     iterator.remove();
-                    resource.add(res);
                     totalResource -= res.getAmount();
+                    resource.add(res);
                     }
                 else
                     {
                     entities.add((Entity)(node.resource));
+					totalResource--;            
                     }
                 }
             else break;             // don't process any more
